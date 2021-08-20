@@ -2,3 +2,5 @@
 data/wider_face_add_lm_10_10/
 #Ignore models
 models/train-version-RFB/
+#Ignore upload_data
+upload_data/*

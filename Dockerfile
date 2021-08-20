@@ -1,4 +1,4 @@
-#for fast-depth
+#for Edgeeye-Model-Train
 FROM pytorch/pytorch:latest
 
 WORKDIR /app
@@ -13,4 +13,6 @@ RUN python3 -m pip install onnx==1.8.1 onnxruntime onnx-simplifier
 RUN python3 -m pip install matplotlib
 RUN python3 -m pip install flask
 RUN python3 -m pip install future
-#for FastDepth
+RUN python3 -m pip install aiohttp
+RUN python3 -m pip install aiofiles
+RUN python3 -m pip install wget
