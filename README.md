@@ -31,5 +31,5 @@ sh run.sh
 ## Train Start
 
 ## Reference
-- [Ultra-Light-Fast-Generic-Face-Detector-1MB](https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB]=)
+- [Ultra-Light-Fast-Generic-Face-Detector-1MB](https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB)
 - [nncase](https://github.com/kendryte/nncase)
