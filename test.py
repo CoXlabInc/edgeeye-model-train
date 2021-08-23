@@ -1,4 +1,2 @@
-import time
-print("Rulu LaLA 1")
-time.sleep(5)
-print("Wake up!")
+if __name__ == "__main__":
+    print("hello")
