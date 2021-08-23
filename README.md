@@ -53,14 +53,14 @@ coco2014
 ----------------------------
 ```
 ## Train Start
-Essential Parameter : -c : class, -f : confirmed, -d : dataset, -t : token
+Essential Parameter : -c : class, -f : confirmed, -d : dataset, -t : token, -a: address
 - ex) using coco2014 dataset, confirmed dataset, person class
 ```
-sh run.sh -d coco2014 -t aboi123jflkmb -f 1 -c person
+sh run.sh -d coco2014 -t aboi123jflkmb -f 1 -c person -a https://town.coxlab.kr
 ```
 - ex) using coco2014 + voc2007 dataset, unconfirmed dataset, car class
 ```
-sh run.sh -d coco2014 voc2007 -t aboi123jflkmb -f 0 -c car
+sh run.sh -d coco2014 voc2007 -t aboi123jflkmb -f 0 -c car -a https://town.coxlab.kr
 ```
 
 ## Reference
