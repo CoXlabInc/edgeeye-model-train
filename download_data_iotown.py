@@ -81,11 +81,11 @@ def make_xml(trainClass, folder,filename,width,height,bbox):
     tree = ElementTree(root)
     tree.write(folderAnnotation + "/" + fname + '.xml',encoding='utf-8',xml_declaration=True)
 
-def MakeDirectory(trainClass):
-    # iotown_data_$class라고 생긴 directory를 생성함
-    # 그 밑에 Annotations, ImageSets/Main/, JPEGImages 폴더를 생성함
+def MakeDirectory(modelid):
+    # iotown_data_$modlid mkdir
+    # under root Annotations, ImageSets/Main/, JPEGImages folder
     global folderRoot, folderAnnotation, folderImageSets, folderJPEG
-    folderRoot = "./data/iotown_data_" + trainClass
+    folderRoot = "./data/iotown_data_" + modelid
     folderAnnotation = folderRoot + "/Annotations"
     folderImageSets = folderRoot + "/ImageSets/Main"
     folderJPEG = folderRoot + "/JPEGImages"
@@ -162,9 +162,10 @@ if __name__ == '__main__':
     parser.add_argument("-t", "--token", help="token for using IOTOWN API")
     parser.add_argument("-c", "--trainclass", help="Train Class Label")
     parser.add_argument("-a", "--address", help="IoT.own Server Address")
+    parser.add_argument("-i", "--modelid", help="Model ID")
     args = parser.parse_args()
 
-    MakeDirectory(args.trainclass)
+    MakeDirectory(args.modelid)
     MakeAnnoAndImage(args.address, args.token, args.trainclass, args.dataset)
 
     

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-while getopts c:f:d:t:a: flag
+while getopts c:f:d:t:a:i: flag
 do
     case ${flag} in
         c) class=${OPTARG};;
@@ -7,23 +7,27 @@ do
         d) dataset=${OPTARG};;
         t) token=${OPTARG};;
         a) address=${OPTARG};;
+        i) modelid=${OPTARG};;
     esac
 done
 if [ -z $class ] ; then
-    echo "Not Class Parameter"
+    echo "Input class (-c) human, car, ... "
     exit 0
 elif [ -z $confirmed ] ; then
-    echo "Not confirmed Parameter"
+    echo "Input confirmed or unconfirmed (-f) 1 or 0"
     exit 0
 elif [ -z $dataset ] ; then 
-    echo "Not dataset Parameter"
+    echo "Input Dataset Name (-d)"
     exit 0
 elif [ -z $token ] ; then
-    echo "Not token Parameter"
+    echo "Input IoT.own API Token (-t)"
     exit 0
 elif [ -z $address ] ; then
-    echo "Not address Parameter"
-    exit 0    
+    echo "Input Server Address (-a)"
+    exit 0
+elif [ -z $modelid ] ; then
+    echo "Input model ID (-i)"    
+    exit 0
 else 
     echo "========================================="
     echo "EdgeEye Model Train Ver 0.1"
@@ -32,16 +36,16 @@ else
 fi
 
 
-model_root_path="./models/train-version-RFB/$class"
+model_root_path="./models/train-version-RFB/$modelid"
 log_dir="$model_root_path/logs"
 log="$log_dir/log"
 mkdir -p "$log_dir"
 
 download_data(){
-    python3 download_data_iotown.py -a $address -c $class -t $token -f $confirmed -d $dataset;
+    python3 download_data_iotown.py -a $address -c $class -t $token -f $confirmed -d $dataset -i $modelid;
 }
 download_res=$(download_data) 
-if [ $download_res != "success" ];then
+if [ "$download_res" != "success" ];then
     echo "Error while downloading data"
     echo "Reason -----------------------------------------------========"
     echo $download_res
@@ -53,9 +57,9 @@ echo "Training Start!"
 
 python3 -u train.py \
   --datasets \
-  ./data/iotown_data_$class\
+  ./data/iotown_data_$modelid\
   --validation_dataset \
-  ./data/iotown_data_$class\
+  ./data/iotown_data_$modelid\
   --net \
   RFB \
   --num_epochs \
@@ -76,4 +80,12 @@ python3 -u train.py \
   ${log_dir} \
   --cuda_index \
   0 \
-  2>&1 | tee "$log"
+  --modelid \
+  ${modelid} \
+  2>&1 | tee "$log";
+
+# onnxSimple(){
+#     python3 -m onnxsim $convert_res $onnxsim_path
+# }
+# echo "Convert To OnnxSimple Success"
+# echo "Convert Onnxsim To Kmodel..."

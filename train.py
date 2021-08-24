@@ -6,6 +6,8 @@ import itertools
 import logging
 import os
 import sys
+import convert_to_onnx
+import convert_to_kmodel
 
 import torch
 from torch import nn
@@ -96,6 +98,8 @@ parser.add_argument('--optimizer_type', default="SGD", type=str,
                     help='optimizer_type')
 parser.add_argument('--input_size', default=320, type=int,
                     help='define network input size,default optional value 128/160/320/480/640/1280')
+# Model ID for onnx convert
+parser.add_argument("-m", "--modelid", help="Model ID for approach to path")
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -358,3 +362,17 @@ if __name__ == '__main__':
             model_path = os.path.join(args.checkpoint_folder, f"{args.net}-Epoch-{epoch}-Loss-{val_loss}.pth")
             net.module.save(model_path)
             logging.info(f"Saved model {model_path}")
+    print("Model Train SUCCESS")
+    print(">>>> Convert pth to onnx...")
+    if convert_to_onnx.pth_to_onnx(args.modelid):
+        print("Convert SUCCESS")
+        print(">>>> Convert onnx to kmodel...")
+        if onnx_to_kmodel():
+            kmodel_path = f"models/kmodel/{modelid}.kmodel"
+            print("Convert SUCCESS")
+            print(">>>>", kmodel_path)
+        else:
+            print("Convert Fail while onnx -> kmodel")
+    else:
+        print("ERROR while Convert Onnx to ONNXsimple")
+        exit()
