@@ -31,6 +31,9 @@ folderAnnotation = ""
 folderImageSets = ""
 folderJPEG = ""
 
+def checkModelID(modelID):
+    # whether or not there is modelID in IoT.own Server
+    return True
 def indent(elem, level=0):
     i = "\n" + level*"  "
     if len(elem):
@@ -165,6 +168,9 @@ if __name__ == '__main__':
     parser.add_argument("-i", "--modelid", help="Model ID")
     args = parser.parse_args()
 
+    if (not checkModelID(args.modelid)):
+        print("Fail")
+        exit()
     MakeDirectory(args.modelid)
     MakeAnnoAndImage(args.address, args.token, args.trainclass, args.dataset)
 

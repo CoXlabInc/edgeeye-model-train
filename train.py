@@ -366,13 +366,8 @@ if __name__ == '__main__':
     print(">>>> Convert pth to onnx...")
     if convert_to_onnx.pth_to_onnx(args.modelid):
         print("Convert SUCCESS")
-        print(">>>> Convert onnx to kmodel...")
-        if onnx_to_kmodel():
-            kmodel_path = f"models/kmodel/{modelid}.kmodel"
-            print("Convert SUCCESS")
-            print(">>>>", kmodel_path)
-        else:
-            print("Convert Fail while onnx -> kmodel")
+        print(">>>> Convert onnx to kmodel... it takes a few minutes")
+        convert_to_kmodel.onnx_to_kmodel(args.datasets[0],args.modelid)
     else:
         print("ERROR while Convert Onnx to ONNXsimple")
         exit()

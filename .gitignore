@@ -2,5 +2,15 @@
 data/*
 #Ignore models
 models/train-version-RFB/*
+models/onnx/*
+models/kmodel/*
+!models/onnx/sample_person.onnx
+!models/kmodel/sample_person.kmodel
 #Ignore upload_data
 upload_data/*
+#Ignore ncc output
+memory_usage.txt
+#Ignore inference
+inference/*
+!inference/bin
+!inference/binout

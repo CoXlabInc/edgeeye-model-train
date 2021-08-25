@@ -84,8 +84,3 @@ python3 -u train.py \
   ${modelid} \
   2>&1 | tee "$log";
 
-# onnxSimple(){
-#     python3 -m onnxsim $convert_res $onnxsim_path
-# }
-# echo "Convert To OnnxSimple Success"
-# echo "Convert Onnxsim To Kmodel..."
