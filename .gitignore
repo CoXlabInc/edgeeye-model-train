@@ -1,11 +1,12 @@
 #Ignore Dataset
-data/*
+data/
 #Ignore models
-models/train-version-RFB/*
+models/train-version-RFB/
+
+models/onnx/
 !models/onnx/sample_person.onnx
-models/onnx/*
+models/kmodel/
 !models/kmodel/sample_person.kmodel
-models/kmodel/*
 
 
 #Ignore upload_data
