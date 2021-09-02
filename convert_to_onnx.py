@@ -30,7 +30,7 @@ def pth_to_onnx(modelid):
         lossdict[loss] = model
     print()
     model_path = "models/train-version-RFB/" + modelid + "/" + lossdict[min(lossdict.keys())]
-
+    print(model_path, "=>",f"models/onnx/{modelid}.onnx")
     net = create_Mb_Tiny_RFB_fd(len(class_names), is_test=True)
     net.load(model_path)
     net.eval()

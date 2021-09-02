@@ -25,7 +25,7 @@ from io import BytesIO
 import os
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 from tqdm import tqdm #progress bar
-
+from pyiotown import model
 folderRoot = ""
 folderAnnotation = ""
 folderImageSets = ""
@@ -122,9 +122,10 @@ def MakeDirectory(modelid):
             print("Failed to create JPEG directory!!!!!")
             raise
 def MakeAnnoAndImage(addr, token, trainClass, dataset):
-    labelAddr = addr + "/api/v1.0/nn/images?labels=" + trainClass
-    header = {'Accept':'application/json', 'token':token}
-    r = requests.get(labelAddr, headers=header).json()
+    r = model.downloadAnnotations(addr, token, trainClass)
+    if r == None:
+        print("Error While Download Annotations from IoT.own")
+        exit()
     trainLength = int(len(r['result']) * 0.8)
     count = 0
     f_test  = open( folderImageSets + "/test.txt","w")
@@ -134,8 +135,10 @@ def MakeAnnoAndImage(addr, token, trainClass, dataset):
     f_label.close()
     for item in tqdm(r['result']):
         imageID = item['id']
-        imageAddr = addr + "/nn/dataset/img/" + imageID
-        byteimage = requests.get(imageAddr, headers=header).content
+        byteimage = model.downloadImage(addr, token, imageID)
+        if byteimage == None:
+            print("Error while DownloadImage:", imageID)
+            continue
         image = Image.open(BytesIO(byteimage))
         image.save(folderJPEG + "/" + imageID + ".jpg") # image save
         minmaxlist = []

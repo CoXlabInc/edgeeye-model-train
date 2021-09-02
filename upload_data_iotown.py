@@ -1,11 +1,9 @@
 import argparse
 import xml.etree.ElementTree as ET
 import base64
-import aiohttp
-import asyncio
-import aiofiles
 import wget
 import tarfile
+from pyiotown import model
 # sets=[('2012', 'train'), ('2012', 'val'), ('2007', 'train'), ('2007', 'val')]
 sets=[]
 classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
@@ -57,16 +55,20 @@ def convert_annotation(year, image_id):
     message += ']}'
     return message
 
-async def main():
-    async with aiohttp.ClientSession() as session:
-        for year, image_set in sets:
-            async with aiofiles.open('./upload_data/VOCdevkit/VOC%s/ImageSets/Main/%s.txt'%(year, image_set)) as f:
-                contents = await f.read()
-                image_ids = contents.strip().split()
-                for image_id in image_ids:
-                    payload = convert_annotation(year, image_id)
-                    r = await session.post('%s/api/v1.0/nn/image'%(args.url), data=payload, headers={'Content-Type': 'application/json', 'Token': args.token}, ssl=False)
-                    print('Upload ./upload_data/VOCdevkit/VOC%s/JPEGImages/%s.jpg => %d %s' % (year, image_id, r.status, r.text))
+def sendToIoTown():
+    for year, image_set in sets:
+        f = open('./upload_data/VOCdevkit/VOC%s/ImageSets/Main/%s.txt'%(year, image_set))
+        contents = f.read()
+        image_ids = contents.strip().split()
+        for image_id in image_ids:
+            payload = convert_annotation(year, image_id)
+            r = model.uploadImage(args.url,args.token,payload)
+            if r:
+                print('Upload Success./upload_data/VOCdevkit/VOC%s/JPEGImages/%s.jpg' % (year, image_id))
+            else:
+                print("Upload Fail.")
+
+            
 
 if __name__ == '__main__':
 
@@ -95,7 +97,7 @@ if __name__ == '__main__':
     tar_url = ""
     if args.dataset == "voc2012":
         download_url = "https://pjreddie.com/media/files/VOCtrainval_11-May-2012.tar"
-        tar_url = "./upload_data/VOCtrainval_06-Nov-2007.tar"
+        tar_url = "./upload_data/VOCtrainval_11-May-2012.tar"
         sets = [('2012', 'train'), ('2012', 'val')]
     elif args.dataset == "voc2007":
         download_url = "https://pjreddie.com/media/files/VOCtrainval_06-Nov-2007.tar"
@@ -114,6 +116,6 @@ if __name__ == '__main__':
     tar.extractall(path="./upload_data/")
     tar.close()
     print("extract OK.")
-    # args = parser.parse_args()
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    print("Send To IoT.own")
+    sendToIoTown()
+    

@@ -21,3 +21,4 @@ RUN python3 -m pip install future
 RUN python3 -m pip install aiohttp
 RUN python3 -m pip install aiofiles
 RUN python3 -m pip install wget
+RUN python3 -m pip install pyiotown
