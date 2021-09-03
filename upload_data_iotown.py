@@ -3,11 +3,13 @@ import xml.etree.ElementTree as ET
 import base64
 import wget
 import tarfile
-from pyiotown import model
+import zipfile
+
+from pyiotown import post
 # sets=[('2012', 'train'), ('2012', 'val'), ('2007', 'train'), ('2007', 'val')]
 sets=[]
 classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
-
+num = 0
 
 def convert(size, box):
     dw = 1./size[0]
@@ -22,6 +24,9 @@ def convert(size, box):
     h = h*dh
     return (x,y,w,h)
 
+def cocoDataset():
+    # Annotation Convert
+    # SendToIoTown
 def convert_annotation(year, image_id):
     in_file = open('./upload_data/VOCdevkit/VOC%s/Annotations/%s.xml'%(year, image_id))
     tree=ET.parse(in_file)
@@ -62,8 +67,9 @@ def sendToIoTown():
         image_ids = contents.strip().split()
         for image_id in image_ids:
             payload = convert_annotation(year, image_id)
-            r = model.uploadImage(args.url,args.token,payload)
+            r = post.uploadImage(args.url,args.token,payload)
             if r:
+                num += 1
                 print('Upload Success./upload_data/VOCdevkit/VOC%s/JPEGImages/%s.jpg' % (year, image_id))
             else:
                 print("Upload Fail.")
@@ -74,7 +80,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Dataset uploader for IoT.own')
     parser.add_argument("-l", "--list", help="get list of dataset in IoT.own",action="store_true")
-    parser.add_argument("-d", "--dataset", help="dataset names ex) coco2014, voc2012, voc2007")
+    parser.add_argument("-d", "--dataset", help="dataset names ex) coco2017, voc2012, voc2007")
     parser.add_argument("-t", "--token", help="you must input api token for using IoT.own API")
     parser.add_argument("-u", "--url", help="IoT.own Server URL ex) http://192.168.0.224")
     args = parser.parse_args()
@@ -86,7 +92,7 @@ if __name__ == '__main__':
         print("----------------------------")
         print("voc2007")
         print("voc2012")
-        print("coco2014")
+        print("coco2017")
         print("----------------------------")
         exit()
     else:
@@ -96,26 +102,38 @@ if __name__ == '__main__':
     download_url = ""
     tar_url = ""
     if args.dataset == "voc2012":
-        download_url = "https://pjreddie.com/media/files/VOCtrainval_11-May-2012.tar"
-        tar_url = "./upload_data/VOCtrainval_11-May-2012.tar"
+        download_url = ["https://pjreddie.com/media/files/VOCtrainval_11-May-2012.tar"]
+        tar_url = ["./upload_data/VOCtrainval_11-May-2012.tar"]
         sets = [('2012', 'train'), ('2012', 'val')]
     elif args.dataset == "voc2007":
-        download_url = "https://pjreddie.com/media/files/VOCtrainval_06-Nov-2007.tar"
-        tar_url = "./upload_data/VOCtrainval_06-Nov-2007.tar"
-        sets = [('2007', 'train'), ('2007', 'val')]
-    elif args.dataset == "coco2014":
-        download_url = "fuck"
-        tar_url = "fuck2"
+        download_url = ["https://pjreddie.com/media/files/VOCtrainval_06-Nov-2007.tar", "http://pjreddie.com/media/files/VOCtest_06-Nov-2007.tar"]
+        tar_url = ["./upload_data/VOCtrainval_06-Nov-2007.tar","./upload_data/VOCtest_06-Nov-2007.tar"]
+        sets = [('2007', 'train'), ('2007', 'val'), ('2007','test')]
+    elif args.dataset == "coco2017":
+        download_url = ["http://images.cocodataset.org/zips/train2017.zip"]
+        tar_url = ["./upload_data/train2017.zip"]
     else: 
-        print("Dataset", args.dataset ,"is Not Exist in IoT.own")
+        print("Dataset", args.dataset ,"is Not implemented yet.")
         exit()
     print("Downloading Dataset....")
-    wget.download(download_url, out="./upload_data/") 
+    for url in download_url:
+        print(url)
+        wget.download(url, out="./upload_data/") 
     print("\n Downloaded OK. Unzip Dataset....")
-    tar = tarfile.open(tar_url)
-    tar.extractall(path="./upload_data/")
-    tar.close()
+    for tarURL in tar_url:
+        if tarURL[-3:] == "zip":
+            zip_ref = zipfile.ZipFile(tarURL, 'r')
+            zip_ref.extractall("./upload_data/")
+            zip_ref.close()
+        elif tarURL[-3:] == "tar":
+            tar = tarfile.open(tarURL)
+            tar.extractall(path="./upload_data/")
+            tar.close()
+        else:
+            print("unknown zip system check file.")
+            exit()
     print("extract OK.")
     print("Send To IoT.own")
     sendToIoTown()
+    print("total",num,"file upload ok")
     

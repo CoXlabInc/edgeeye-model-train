@@ -1,19 +1,19 @@
 <img src="logo/edgeeye.jpg" title="EdgeEye" alt="EdgeEye"></img><br/>
-# Edgeeye Model Train 
+# **Edgeeye Model Train**
 
 Edgeeye Custom Model Training based on - [Ultra-Light-Fast-Generic-Face-Detector-1MB](https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB]=)
 
 ---
-## Environment
+## **Environment**
 - Linux ( currently only support )
-## Install
+## **Install**
 1. Dockerfile Build & Run
 2. Upload Custom Dataset
 3. Show Datasets
 4. Train Start
 5. Test Model
 ---
-## Dockerfile Build & Run
+## **Dockerfile Build & Run**
 - Dockerfile Build
 ```
 docker build --tag {tagname} ./
@@ -22,7 +22,7 @@ docker build --tag {tagname} ./
 ```
 docker run --rm -it --runtime nvidia --network host -v $PWD:/app {tagname}
 ```
-## Upload Custom Dataset
+## **Upload Custom Dataset**
 
 ```
 python3 upload_data_iotown.py --dataset {dataset name} --token {IoT.own Api token} --url {IoT.own Server URL}
@@ -38,7 +38,7 @@ python3 upload_data_iotown.py --dataset voc2012 --token aboi123jflkmb --url http
 python3 upload_data_iotown.py --dataset coco2014 --token aboi123jflkmb --url https://town.coxlab.kr
 
 ```
-## Show Datasets (Beta)
+## **Show Datasets (Beta)**
 show Datasets in IoT.own
 ```
 python3 upload_data_iotown.py --list --token aboi123jflkmb
@@ -53,7 +53,7 @@ voc2012
 coco2014
 ----------------------------
 ```
-## Train Start
+## **Train Start**
 Essential Parameter : -c : class, -f : confirmed, -d : dataset, -t : token, -a: address -i:modelid
 - ex) using coco2014 dataset, confirmed dataset, person class
 ```
@@ -64,7 +64,7 @@ sh run.sh -d coco2014 -t aboi123jflkmb -f 1 -c person -a https://town.coxlab.kr 
 sh run.sh -d coco2014 voc2007 -t aboi123jflkmb -f 0 -c car -a https://town.coxlab.kr -i abcd1234
 ```
 
-## Test Model
+## **Test Model**
 input imageroot, onnxroot, kmodelroot then draw box to original image
 ```
 python3 model_test.py --image ./image/1.jpg --onnx ./models/onnx/abcd1234_simple.onnx --kmodel abcd1234.kmodel
@@ -73,6 +73,6 @@ check /inference folder save with name 1.jpg (original image name)
 
 
 
-## Reference
+## **Reference**
 - [Ultra-Light-Fast-Generic-Face-Detector-1MB](https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB)
 - [nncase](https://github.com/kendryte/nncase)
