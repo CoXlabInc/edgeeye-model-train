@@ -67,10 +67,10 @@ upload_data
 |:---:|:---:|:---:|
 | filename | image file name| 0000001.jpg |
 | class | object class | cat |
-| x | box center X ratio | 0.36 |
-| y | box center Y ratio | 0.69 |
-| w | box width ratio | 0.16 |
-| h | box height ratio | 0.42 | 
+| x | box center X ratio ( center X coordinate / image width )| 0.36 |
+| y | box center Y ratio ( center Y coordinate / image height )| 0.69 |
+| w | box width ratio ( box width / image width ) | 0.16 |
+| h | box height ratio ( box height / image height) | 0.42 | 
 ### *csv example*
 | filename | class | x | y | w | h |
 |:---:|:---:|:---:|:---:|:---:|:---:|
